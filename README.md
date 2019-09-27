@@ -4,7 +4,7 @@ excel导出
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ExcelTarget("运单报表")
+@ExcelTarget(title = "运单报表", frozenColumns = 2, frozenRows = 2)
 public class AwbDto {
     /**
      * 运单号
@@ -117,7 +117,7 @@ public class ExcelController {
         
         }
         
-        try (OutputStream outputStream1 = new FileOutputStream(new File("/Users/liuy/Downloads/Excel文件.xlsx"))) {
+        try (OutputStream outputStream1 = new FileOutputStream(new File("/Users/liu/Downloads/Excel文件.xlsx"))) {
             new ExcelExportBuilder()
                     .build("运单月报(1月)", getData1(), AwbDto.class)
                     .write(outputStream1);
