@@ -5,7 +5,9 @@ import com.naspart.poi.annotation.ExcelTarget;
 import com.naspart.poi.entity.ExcelFieldEntity;
 import com.naspart.poi.entity.ExcelTargetEntity;
 import com.naspart.poi.function.ExcelDataFunction;
-import com.naspart.poi.util.ExcelUtils;
+import com.naspart.poi.style.ExcelExportDefaultStyleBuilder;
+import com.naspart.poi.style.IExcelExportStyleBuilder;
+import com.naspart.poi.util.BeanUtils;
 import com.naspart.poi.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -98,7 +100,7 @@ public class ExcelExportBuilder {
     }
 
     private ExcelTargetEntity getExcelTargetEntity(Sheet sheet, Class<?> clazz) {
-        Field[] fields = ExcelUtils.getClassFields(clazz);
+        Field[] fields = BeanUtils.getClassFields(clazz);
 
         ExcelTarget excelTarget = clazz.getAnnotation(ExcelTarget.class);
         String sheetTitle = (excelTarget == null ? "" : excelTarget.title());
@@ -249,7 +251,7 @@ public class ExcelExportBuilder {
         Cell[] cells = this.createCells(row, excelTargetEntity.isHasSheetIndex(), excelTargetEntity.getFields().size());
         int cellNum = excelTargetEntity.isHasSheetIndex() ? 1 : 0;
         for (Field field : excelTargetEntity.getFields()) {
-            Object value = ExcelUtils.getFieldValue(obj, field.getName());
+            Object value = BeanUtils.getFieldValue(obj, field.getName());
             ExcelFieldEntity entity = excelTargetEntity.getExcelFieldEntityMap().get(field);
             if (value == null) {
                 cells[cellNum].setCellValue("");

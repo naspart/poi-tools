@@ -1,4 +1,4 @@
-package com.naspart.poi;
+package com.naspart.poi.style;
 
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
@@ -9,7 +9,7 @@ public class ExcelExportDefaultStyleBuilder extends AbstractExcelExportStyleBuil
     }
 
     @Override
-    public CellStyle getTableHeaderStyle() {
+    public CellStyle buildTableHeaderStyle() {
         Font headFont = workbook.createFont();
         headFont.setFontName("宋体");
         headFont.setFontHeightInPoints((short) 11);
@@ -32,7 +32,7 @@ public class ExcelExportDefaultStyleBuilder extends AbstractExcelExportStyleBuil
     }
 
     @Override
-    public CellStyle getTableTitleStyle() {
+    public CellStyle buildTableTitleStyle() {
         Font titleFont = workbook.createFont();
         titleFont.setFontName("华文楷体");
         titleFont.setFontHeightInPoints((short) 20);
@@ -54,7 +54,7 @@ public class ExcelExportDefaultStyleBuilder extends AbstractExcelExportStyleBuil
     }
 
     @Override
-    public CellStyle getTableIndexStyle() {
+    public CellStyle buildTableIndexStyle() {
         Font rowNumFont = workbook.createFont();
         rowNumFont.setFontName("华文楷体");
         rowNumFont.setFontHeightInPoints((short) 10);

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ExcelUtils {
+public class BeanUtils {
     public static Field[] getClassFields(Class<?> clazz) {
         List<Field> list = new ArrayList<>();
         Field[] fields;

@@ -1,4 +1,4 @@
-package com.naspart.poi;
+package com.naspart.poi.style;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -11,16 +11,16 @@ public abstract class AbstractExcelExportStyleBuilder implements IExcelExportSty
 
     protected AbstractExcelExportStyleBuilder(Workbook workbook) {
         this.workbook = workbook;
-        this.tableTitleStyle = getTableTitleStyle();
-        this.tableHeaderStyle = getTableHeaderStyle();
-        this.tableIndexStyle = getTableIndexStyle();
+        this.tableTitleStyle = buildTableTitleStyle();
+        this.tableHeaderStyle = buildTableHeaderStyle();
+        this.tableIndexStyle = buildTableIndexStyle();
     }
 
-    public abstract CellStyle getTableTitleStyle();
+    public abstract CellStyle buildTableTitleStyle();
 
-    public abstract CellStyle getTableHeaderStyle();
+    public abstract CellStyle buildTableHeaderStyle();
 
-    public abstract CellStyle getTableIndexStyle();
+    public abstract CellStyle buildTableIndexStyle();
 
     @Override
     public CellStyle getTitleStyle() {

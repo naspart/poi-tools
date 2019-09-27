@@ -1,8 +1,8 @@
-package com.naspart.poi;
+package com.naspart.poi.style;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 
-interface IExcelExportStyleBuilder {
+public interface IExcelExportStyleBuilder {
     /**
      * 列表头样式
      */
