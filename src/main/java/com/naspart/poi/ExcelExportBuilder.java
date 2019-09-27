@@ -51,7 +51,7 @@ public class ExcelExportBuilder {
         this.excelExportStyleBuilder.setWorkbook(workbook);
     }
 
-    public <R, T> void build(String sheetName, R param, ExcelDataFunction<R, T> excelDataFunction, Class<?> clazz) {
+    public <R, T> ExcelExportBuilder build(String sheetName, R param, ExcelDataFunction<R, T> excelDataFunction, Class<?> clazz) {
         Sheet sheet = workbook.createSheet(sheetName);
 
         ExcelTargetEntity excelTargetEntity = this.getExcelTargetEntity(sheet, clazz);
@@ -78,9 +78,11 @@ public class ExcelExportBuilder {
         }
 
         sheet.createFreezePane(excelTargetEntity.getFrozenColumns(), excelTargetEntity.getFrozenRows());
+
+        return this;
     }
 
-    public void build(String sheetName, Collection<?> dataSet, Class<?> clazz) {
+    public ExcelExportBuilder build(String sheetName, Collection<?> dataSet, Class<?> clazz) {
         Sheet sheet = workbook.createSheet(sheetName);
 
         ExcelTargetEntity excelTargetEntity = this.getExcelTargetEntity(sheet, clazz);
@@ -96,10 +98,19 @@ public class ExcelExportBuilder {
         }
 
         sheet.createFreezePane(excelTargetEntity.getFrozenColumns(), excelTargetEntity.getFrozenRows());
+
+        return this;
     }
 
-    public void out(OutputStream outputStream) throws IOException {
-        this.workbook.write(outputStream);
+    public void write(OutputStream outputStream) throws IOException {
+        try {
+            if (outputStream != null) {
+                this.workbook.write(outputStream);
+                outputStream.flush();
+            }
+        } finally {
+            this.workbook.close();
+        }
     }
 
     private ExcelTargetEntity getExcelTargetEntity(Sheet sheet, Class<?> clazz) {

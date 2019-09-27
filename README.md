@@ -97,86 +97,38 @@ public class ExcelController {
                 "attachment;filename=" + new String(
                         ("运单月报_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))).getBytes("gb2312"),
                         "ISO8859-1") + ".xlsx");
-
-        OutputStream out = response.getOutputStream();
-
-        ExcelExportBuilder excelExportService = new ExcelExportBuilder();
-        excelExportService.build("运单月报(1月)", getData1(), AwbDto.class);
-        excelExportService.build("运单月报(2月)", getData1(), AwbDto.class);
-        excelExportService.build("运单月报(3月)", getData1(), AwbDto.class);
-        excelExportService.build("运单月报(4月)", new Date(), new ExcelDataFunction<Date, AwbDto>() {
-            @Override
-            public Collection<AwbDto> getData(Date date, int i, int i1) {
-                return new ArrayList<>();
-            }
-
-            @Override
-            public AwbDto convert(AwbDto awbDto) {
-                return awbDto;
-            }
-        }, AwbDto.class);
-
-        try {
-            excelExportService.out(out);
-        } catch (IOException e) {
-            e.printStackTrace();
+        
+        try (OutputStream outputStream = response.getOutputStream()) {
+            new ExcelExportBuilder()
+                    .build("运单月报(1月)", getData1(), AwbDto.class)
+                    .build("运单月报(2月)", getData1(), AwbDto.class)
+                    .build("运单月报(4月)", new Date(), new ExcelDataFunction<Date, AwbDto>() {
+                        @Override
+                        public Collection<AwbDto> getData(Date date, int i, int i1) {
+                            return new ArrayList<>();
+                        }
+        
+                        @Override
+                        public AwbDto convert(AwbDto awbDto) {
+                            return awbDto;
+                        }
+                    }, AwbDto.class)
+                    .write(outputStream);
+        
         }
-
-        try {
-            excelExportService.out(out);
-        } catch (IOException e) {
-            e.printStackTrace();
+        
+        try (OutputStream outputStream1 = new FileOutputStream(new File("/Users/liuy/Downloads/Excel文件.xlsx"))) {
+            new ExcelExportBuilder()
+                    .build("运单月报(1月)", getData1(), AwbDto.class)
+                    .write(outputStream1);
         }
-
-        out.close();
-        System.out.print("Excel导出成功！");
     }
 
     private List<AwbDto> getData1() {
         List<AwbDto> data = new ArrayList<>();
-        data.add(
-                new AwbDto(
-                        "112",
-                        "张三",
-                        "李刚",
-                        null,
-                        "42186846846846",
-                        8723456.56,
-                        34.5f,
-                        0.7895,
-                        null,
-                        Calendar.getInstance(),
-                        new Date())
-        );
-        data.add(
-                new AwbDto(
-                        "112",
-                        "张三",
-                        "李刚",
-                        3,
-                        "42186846846846",
-                        8723456.56,
-                        34.5f,
-                        0.7895,
-                        null,
-                        Calendar.getInstance(),
-                        new Date())
-        );
-
         for (int i = 0; i < 10000; i++) {
             data.add(
-                    new AwbDto(
-                            "112-",
-                            "张三",
-                            "李刚",
-                            0,
-                            "42186846846846",
-                            8723456.56,
-                            34.5f,
-                            0.7895,
-                            LocalDate.now(),
-                            Calendar.getInstance(),
-                            new Date())
+                    new AwbDto("112-", "张三", "李刚", 0, "42186846846846", 8723456.56, 34.5f, 0.7895, LocalDate.now(), Calendar.getInstance(), new Date())
             );
         }
         return data;
