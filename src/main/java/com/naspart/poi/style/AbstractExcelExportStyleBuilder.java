@@ -3,37 +3,32 @@ package com.naspart.poi.style;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 
-public abstract class AbstractExcelExportStyleBuilder implements IExcelExportStyleBuilder {
-    protected Workbook workbook;
+public abstract class AbstractExcelExportStyleBuilder {
     private CellStyle tableTitleStyle;
     private CellStyle tableHeaderStyle;
     private CellStyle tableIndexStyle;
 
-    protected AbstractExcelExportStyleBuilder(Workbook workbook) {
-        this.workbook = workbook;
-        this.tableTitleStyle = buildTableTitleStyle();
-        this.tableHeaderStyle = buildTableHeaderStyle();
-        this.tableIndexStyle = buildTableIndexStyle();
+    public abstract CellStyle buildTableTitleStyle(Workbook workbook);
+
+    public abstract CellStyle buildTableHeaderStyle(Workbook workbook);
+
+    public abstract CellStyle buildTableIndexStyle(Workbook workbook);
+
+    public final void setWorkbook(Workbook workbook) {
+        this.tableTitleStyle = buildTableTitleStyle(workbook);
+        this.tableHeaderStyle = buildTableHeaderStyle(workbook);
+        this.tableIndexStyle = buildTableIndexStyle(workbook);
     }
 
-    public abstract CellStyle buildTableTitleStyle();
-
-    public abstract CellStyle buildTableHeaderStyle();
-
-    public abstract CellStyle buildTableIndexStyle();
-
-    @Override
-    public CellStyle getTitleStyle() {
+    public final CellStyle getTitleStyle() {
         return this.tableTitleStyle;
     }
 
-    @Override
-    public CellStyle getHeaderStyle() {
+    public final CellStyle getHeaderStyle() {
         return this.tableHeaderStyle;
     }
 
-    @Override
-    public CellStyle getIndexStyle() {
+    public final CellStyle getIndexStyle() {
         return this.tableIndexStyle;
     }
 }

@@ -5,8 +5,8 @@ import com.naspart.poi.annotation.ExcelTarget;
 import com.naspart.poi.entity.ExcelFieldEntity;
 import com.naspart.poi.entity.ExcelTargetEntity;
 import com.naspart.poi.function.ExcelDataFunction;
+import com.naspart.poi.style.AbstractExcelExportStyleBuilder;
 import com.naspart.poi.style.ExcelExportDefaultStyleBuilder;
-import com.naspart.poi.style.IExcelExportStyleBuilder;
 import com.naspart.poi.util.BeanUtils;
 import com.naspart.poi.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -28,24 +28,27 @@ import java.util.*;
 @Slf4j
 public class ExcelExportBuilder {
     private Workbook workbook;
-    private IExcelExportStyleBuilder excelExportStyleBuilder;
+    private AbstractExcelExportStyleBuilder excelExportStyleBuilder;
 
     public ExcelExportBuilder() {
         this.workbook = new SXSSFWorkbook();
-        this.excelExportStyleBuilder = new ExcelExportDefaultStyleBuilder(workbook);
+        this.excelExportStyleBuilder = new ExcelExportDefaultStyleBuilder();
+        this.excelExportStyleBuilder.setWorkbook(workbook);
 
         log.debug("使用默认样式构造器...");
     }
 
-    public ExcelExportBuilder(IExcelExportStyleBuilder excelExportStyle) {
+    public ExcelExportBuilder(AbstractExcelExportStyleBuilder excelExportStyle) {
         this.workbook = new SXSSFWorkbook();
         this.excelExportStyleBuilder = excelExportStyle;
+        this.excelExportStyleBuilder.setWorkbook(workbook);
 
         log.debug("使用自定义样式构造器...");
     }
 
-    public void setExcelExportStyleBuilder(IExcelExportStyleBuilder excelExportStyleBuilder) {
+    public void setExcelExportStyleBuilder(AbstractExcelExportStyleBuilder excelExportStyleBuilder) {
         this.excelExportStyleBuilder = excelExportStyleBuilder;
+        this.excelExportStyleBuilder.setWorkbook(workbook);
     }
 
     public <R, T> void build(String sheetName, R param, ExcelDataFunction<R, T> excelDataFunction, Class<?> clazz) {

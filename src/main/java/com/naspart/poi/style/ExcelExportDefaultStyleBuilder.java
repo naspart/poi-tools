@@ -4,12 +4,8 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 
 public class ExcelExportDefaultStyleBuilder extends AbstractExcelExportStyleBuilder {
-    public ExcelExportDefaultStyleBuilder(Workbook workbook) {
-        super(workbook);
-    }
-
     @Override
-    public CellStyle buildTableHeaderStyle() {
+    public CellStyle buildTableHeaderStyle(Workbook workbook) {
         Font headFont = workbook.createFont();
         headFont.setFontName("宋体");
         headFont.setFontHeightInPoints((short) 11);
@@ -32,7 +28,7 @@ public class ExcelExportDefaultStyleBuilder extends AbstractExcelExportStyleBuil
     }
 
     @Override
-    public CellStyle buildTableTitleStyle() {
+    public CellStyle buildTableTitleStyle(Workbook workbook) {
         Font titleFont = workbook.createFont();
         titleFont.setFontName("华文楷体");
         titleFont.setFontHeightInPoints((short) 20);
@@ -54,7 +50,7 @@ public class ExcelExportDefaultStyleBuilder extends AbstractExcelExportStyleBuil
     }
 
     @Override
-    public CellStyle buildTableIndexStyle() {
+    public CellStyle buildTableIndexStyle(Workbook workbook) {
         Font rowNumFont = workbook.createFont();
         rowNumFont.setFontName("华文楷体");
         rowNumFont.setFontHeightInPoints((short) 10);
