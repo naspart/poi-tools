@@ -1,0 +1,31 @@
+package com.naspart.poi.entity;
+
+import lombok.Builder;
+import lombok.Data;
+import org.apache.poi.ss.usermodel.CellStyle;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+
+@Data
+@Builder
+public class ExcelTargetEntity {
+    private boolean hasSheetTitle;
+
+    private String sheetTitle;
+
+    private boolean hasSheetIndex;
+
+    private String indexName;
+
+    private int frozenColumns;
+
+    private int frozenRows;
+
+    private List<Field> fields;
+
+    private Map<Field, ExcelFieldEntity> excelFieldEntityMap;
+
+    private Map<Field, CellStyle> cellStyleMap;
+}
