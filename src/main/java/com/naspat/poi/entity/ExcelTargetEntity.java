@@ -1,4 +1,4 @@
-package com.naspart.poi.entity;
+package com.naspat.poi.entity;
 
 import lombok.Builder;
 import lombok.Data;

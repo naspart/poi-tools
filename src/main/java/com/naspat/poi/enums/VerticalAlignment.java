@@ -1,4 +1,4 @@
-package com.naspart.poi.enums;
+package com.naspat.poi.enums;
 
 public enum VerticalAlignment {
     /**

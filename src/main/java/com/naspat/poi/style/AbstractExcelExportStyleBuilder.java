@@ -1,4 +1,4 @@
-package com.naspart.poi.style;
+package com.naspat.poi.style;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;

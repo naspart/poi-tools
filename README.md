@@ -71,7 +71,7 @@ public class AwbDto {
 ```
 ```java
 import com.naspart.demo_collections.excel.AwbDto;
-import com.naspart.poi.ExcelExportBuilder;
+import ExcelExportBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;

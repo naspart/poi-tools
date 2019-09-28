@@ -1,4 +1,4 @@
-package com.naspart.poi.function;
+package com.naspat.poi.function;
 
 import java.util.Collection;
 

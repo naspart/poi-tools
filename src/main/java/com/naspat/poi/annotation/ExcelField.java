@@ -1,7 +1,7 @@
-package com.naspart.poi.annotation;
+package com.naspat.poi.annotation;
 
-import com.naspart.poi.enums.HorizontalAlignment;
-import com.naspart.poi.enums.VerticalAlignment;
+import com.naspat.poi.enums.HorizontalAlignment;
+import com.naspat.poi.enums.VerticalAlignment;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

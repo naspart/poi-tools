@@ -1,4 +1,4 @@
-package com.naspart.poi.util;
+package com.naspat.poi.util;
 
 public class StringUtils {
     public static boolean isBlank(CharSequence cs) {
