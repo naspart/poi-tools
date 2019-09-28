@@ -21,7 +21,7 @@
     </licenses>
 
     <scm>
-        <url>http://naspat.ccom</url>
+        <url>http://naspat.com</url>
         <connection>scm:git:https://github.com/naspart/poi-tools.git</connection>
         <developerConnection>scm:git:https://github.com/naspart/poi-tools.git</developerConnection>
     </scm>
@@ -29,7 +29,7 @@
     <developers>
         <developer>
             <name>naspat</name>
-            <email>820310472@qq.com</email>
+            <email>liuy@hgobox.com</email>
             <organization>http://naspat.com</organization>
             <organizationUrl>http://naspat.com</organizationUrl>
         </developer>
@@ -145,7 +145,7 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>

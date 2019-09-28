@@ -12,29 +12,29 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 public @interface ExcelField {
     /**
-     * 字段名
+     * @return 字段名
      */
     String name();
 
     /**
-     * 格式
+     * @return 格式
      */
     String format() default "";
 
     String[] replace() default {};
 
     /**
-     * 长度
+     * @return 长度
      */
     int width() default 10;
 
     /**
-     * 水平对齐
+     * @return 水平对齐
      */
     HorizontalAlignment horizontalAlignment() default HorizontalAlignment.GENERAL;
 
     /**
-     * 垂直对齐
+     * @return 垂直对齐
      */
     VerticalAlignment verticalAlignment() default VerticalAlignment.CENTER;
 }
