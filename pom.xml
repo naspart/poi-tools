@@ -6,7 +6,7 @@
 
     <groupId>com.naspat</groupId>
     <artifactId>poi-tools</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>poi-tools</name>
     <url>https://github.com/naspart/poi-tools</url>
@@ -15,23 +15,22 @@
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <url>http://naspat.com</url>
+        <url>https://github.com/naspart/poi-tools</url>
         <connection>scm:git:https://github.com/naspart/poi-tools.git</connection>
-        <developerConnection>scm:git:https://github.com/naspart/poi-tools.git</developerConnection>
     </scm>
 
     <developers>
         <developer>
-            <name>naspat</name>
-            <email>liuy@hgobox.com</email>
-            <organization>http://naspat.com</organization>
-            <organizationUrl>http://naspat.com</organizationUrl>
+            <name>Fabron Lau</name>
+            <email>fabron.lau@gmail.com</email>
+            <organization>https://github.com/naspart</organization>
+            <organizationUrl>https://github.com/naspart</organizationUrl>
         </developer>
     </developers>
 
