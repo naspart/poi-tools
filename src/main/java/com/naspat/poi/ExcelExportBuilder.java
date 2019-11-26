@@ -262,7 +262,7 @@ public class ExcelExportBuilder {
         Row row = sheet.createRow(rowNum);
         row.setHeight((short) 300);
 
-        Cell[] cells = this.createCells(row, excelTargetEntity.isHasSheetIndex(), excelTargetEntity.getFields().size());
+        Cell[] cells = this.createCells(row, excelTargetEntity.isHasSheetIndex(), excelTargetEntity.isHasSheetTitle(), excelTargetEntity.getFields().size());
         int cellNum = excelTargetEntity.isHasSheetIndex() ? 1 : 0;
         for (Field field : excelTargetEntity.getFields()) {
             Object value = BeanUtils.getFieldValue(obj, field.getName());
@@ -343,7 +343,7 @@ public class ExcelExportBuilder {
         }
     }
 
-    private Cell[] createCells(Row row, boolean hasSheetIndex, int num) {
+    private Cell[] createCells(Row row, boolean hasSheetIndex, boolean hasSheetTitle, int num) {
         Cell[] cells = new Cell[hasSheetIndex ? (num + 1) : num];
         for (int i = 0, len = cells.length; i < len; i++) {
             cells[i] = row.createCell(i);
@@ -351,7 +351,7 @@ public class ExcelExportBuilder {
 
         if (hasSheetIndex) {
             CellStyle tableIndexStyle = excelExportStyleBuilder.getIndexStyle();
-            cells[0].setCellValue(row.getRowNum() - 2);
+            cells[0].setCellValue(hasSheetTitle ? (row.getRowNum() - 1) : row.getRowNum());
             cells[0].setCellStyle(tableIndexStyle);
         }
 
