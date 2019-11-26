@@ -11,12 +11,12 @@ public @interface ExcelTarget {
     /**
      * @return sheet 标题
      */
-    String title() default "数据报表";
+    String title() default "";
 
     /**
      * @return 索引列名
      */
-    String indexName() default "序号";
+    String indexName() default "";
 
     /**
      * @return 冻结列
@@ -24,7 +24,7 @@ public @interface ExcelTarget {
     int frozenColumns() default 0;
 
     /**
-     *  @return 冻结行
+     * @return 冻结行
      */
     int frozenRows() default 0;
 }

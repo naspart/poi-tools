@@ -6,7 +6,7 @@
 
     <groupId>com.naspat</groupId>
     <artifactId>poi-tools</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <name>poi-tools</name>
     <url>https://github.com/naspart/poi-tools</url>
