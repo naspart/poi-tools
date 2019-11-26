@@ -5,6 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation for mapping excel sheet attributes.
+ *
+ * <p><strong>Note:</strong> This annotation must be used at the class level.
+ *
+ * @author Fabron Lau
+ * @since 1.0.0
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface ExcelTarget {
