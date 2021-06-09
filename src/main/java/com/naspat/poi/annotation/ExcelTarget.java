@@ -22,11 +22,6 @@ public @interface ExcelTarget {
     String title() default "";
 
     /**
-     * @return 索引列名
-     */
-    String indexName() default "";
-
-    /**
      * @return 冻结列
      */
     int frozenColumns() default 0;

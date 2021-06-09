@@ -27,7 +27,7 @@ import java.util.*;
 
 @Slf4j
 public class ExcelExportBuilder {
-    private Workbook workbook;
+    private final Workbook workbook;
     private AbstractExcelExportStyleBuilder excelExportStyleBuilder;
 
     public ExcelExportBuilder() {
@@ -52,9 +52,17 @@ public class ExcelExportBuilder {
     }
 
     public <R, T> ExcelExportBuilder build(String sheetName, R param, ExcelDataFunction<R, T> excelDataFunction, Class<?> clazz) {
+        return this.build(null, sheetName, param, excelDataFunction, clazz);
+    }
+
+    public <R, T> ExcelExportBuilder build(String sheetTitle, String sheetName, R param, ExcelDataFunction<R, T> excelDataFunction, Class<?> clazz) {
         Sheet sheet = workbook.createSheet(sheetName);
 
         ExcelTargetEntity excelTargetEntity = this.getExcelTargetEntity(sheet, clazz);
+
+        if (StringUtils.isNotBlank(sheetTitle)) {
+            excelTargetEntity.setSheetTitle(sheetTitle);
+        }
 
         this.initTableTitle(sheet, excelTargetEntity);
         this.initTableHeader(sheet, excelTargetEntity);
@@ -83,9 +91,17 @@ public class ExcelExportBuilder {
     }
 
     public ExcelExportBuilder build(String sheetName, Collection<?> dataSet, Class<?> clazz) {
+        return this.build(null, sheetName, dataSet, clazz);
+    }
+
+    public ExcelExportBuilder build(String sheetTitle, String sheetName, Collection<?> dataSet, Class<?> clazz) {
         Sheet sheet = workbook.createSheet(sheetName);
 
         ExcelTargetEntity excelTargetEntity = this.getExcelTargetEntity(sheet, clazz);
+
+        if (StringUtils.isNotBlank(sheetTitle)) {
+            excelTargetEntity.setSheetTitle(sheetTitle);
+        }
 
         this.initTableTitle(sheet, excelTargetEntity);
         this.initTableHeader(sheet, excelTargetEntity);
@@ -98,6 +114,8 @@ public class ExcelExportBuilder {
         }
 
         sheet.createFreezePane(excelTargetEntity.getFrozenColumns(), excelTargetEntity.getFrozenRows());
+
+        sheet.addMergedRegion(new CellRangeAddress(2, 3, 1, 1));
 
         return this;
     }
@@ -118,12 +136,10 @@ public class ExcelExportBuilder {
 
         ExcelTarget excelTarget = clazz.getAnnotation(ExcelTarget.class);
         String sheetTitle = (excelTarget == null ? "" : excelTarget.title());
-        String indexName = (excelTarget == null ? "" : excelTarget.indexName());
         int frozenColumns = excelTarget == null ? 0 : excelTarget.frozenColumns();
         int frozenRows = excelTarget == null ? 0 : excelTarget.frozenRows();
 
         boolean hasSheetTitle = StringUtils.isNotBlank(sheetTitle);
-        boolean hasSheetIndex = StringUtils.isNotBlank(indexName);
 
         List<Field> fieldList = new ArrayList<>();
         Map<Field, ExcelFieldEntity> excelFieldEntityMap = new HashMap<>();
@@ -135,7 +151,7 @@ public class ExcelExportBuilder {
             ExcelField excelField = field.getAnnotation(ExcelField.class);
             if (excelField != null) {
                 CellStyle cellStyle = getCellStyle(sheet, excelField.format(), excelField.horizontalAlignment(), excelField.verticalAlignment());
-                sheet.setColumnWidth(index + (hasSheetIndex ? 1 : 0), excelField.width() * 256);
+                sheet.setColumnWidth(index, excelField.width() * 256);
 
                 Map<String, String> replaceMap = new HashMap<>();
                 String[] replace = excelField.replace();
@@ -163,8 +179,6 @@ public class ExcelExportBuilder {
         return ExcelTargetEntity.builder()
                 .hasSheetTitle(hasSheetTitle)
                 .sheetTitle(sheetTitle)
-                .hasSheetIndex(hasSheetIndex)
-                .indexName(indexName)
                 .frozenColumns(frozenColumns)
                 .frozenRows(frozenRows)
                 .fields(fieldList)
@@ -224,7 +238,7 @@ public class ExcelExportBuilder {
         if (StringUtils.isNotBlank(entity.getSheetTitle())) {
             CellStyle tableTitleStyle = excelExportStyleBuilder.getTitleStyle();
 
-            CellRangeAddress titleRange = new CellRangeAddress(0, 0, 0, entity.getExcelFieldEntityMap().size() - (entity.isHasSheetIndex() ? 0 : 1));
+            CellRangeAddress titleRange = new CellRangeAddress(0, 0, 0, entity.getExcelFieldEntityMap().size() - 1);
             sheet.addMergedRegion(titleRange);
 
             Row titleRow = sheet.createRow(0);
@@ -242,17 +256,11 @@ public class ExcelExportBuilder {
         Row headRow = sheet.createRow(entity.isHasSheetTitle() ? 1 : 0);
         headRow.setHeight((short) 350);
 
-        if (entity.isHasSheetIndex()) {
-            Cell snCell = headRow.createCell(0);
-            snCell.setCellStyle(tableHeaderStyle);
-            snCell.setCellValue("序号");
-        }
-
         for (int index = 0; index < entity.getFields().size(); index++) {
             Field field = entity.getFields().get(index);
             ExcelFieldEntity tmp = entity.getExcelFieldEntityMap().get(field);
 
-            Cell headCell = headRow.createCell(index + (entity.isHasSheetIndex() ? 1 : 0));
+            Cell headCell = headRow.createCell(index);
             headCell.setCellStyle(tableHeaderStyle);
             headCell.setCellValue(tmp.getName());
         }
@@ -262,15 +270,16 @@ public class ExcelExportBuilder {
         Row row = sheet.createRow(rowNum);
         row.setHeight((short) 300);
 
-        Cell[] cells = this.createCells(row, excelTargetEntity.isHasSheetIndex(), excelTargetEntity.isHasSheetTitle(), excelTargetEntity.getFields().size());
-        int cellNum = excelTargetEntity.isHasSheetIndex() ? 1 : 0;
+        Cell[] cells = this.createCells(row, excelTargetEntity.getFields().size());
+        int cellNum = 0;
         for (Field field : excelTargetEntity.getFields()) {
             Object value = BeanUtils.getFieldValue(obj, field.getName());
             ExcelFieldEntity entity = excelTargetEntity.getExcelFieldEntityMap().get(field);
+
             if (value == null) {
                 cells[cellNum].setCellValue("");
             } else {
-                Class type = field.getType();
+                Class<?> type = field.getType();
                 switch (type.getName()) {
                     case "int":
                     case "java.lang.Integer":
@@ -343,16 +352,10 @@ public class ExcelExportBuilder {
         }
     }
 
-    private Cell[] createCells(Row row, boolean hasSheetIndex, boolean hasSheetTitle, int num) {
-        Cell[] cells = new Cell[hasSheetIndex ? (num + 1) : num];
+    private Cell[] createCells(Row row, int num) {
+        Cell[] cells = new Cell[num];
         for (int i = 0, len = cells.length; i < len; i++) {
             cells[i] = row.createCell(i);
-        }
-
-        if (hasSheetIndex) {
-            CellStyle tableIndexStyle = excelExportStyleBuilder.getIndexStyle();
-            cells[0].setCellValue(hasSheetTitle ? (row.getRowNum() - 1) : row.getRowNum());
-            cells[0].setCellStyle(tableIndexStyle);
         }
 
         return cells;
