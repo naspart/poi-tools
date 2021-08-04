@@ -15,8 +15,6 @@ public class ExcelTargetEntity {
 
     private String sheetTitle;
 
-    private String indexName;
-
     private int frozenColumns;
 
     private int frozenRows;
