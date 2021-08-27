@@ -1,7 +1,7 @@
-package com.naspat.poi.entity;
+package com.hgobox.poi.entity;
 
-import com.naspat.poi.enums.HorizontalAlignment;
-import com.naspat.poi.enums.VerticalAlignment;
+import com.hgobox.poi.enums.VerticalAlignment;
+import com.hgobox.poi.enums.HorizontalAlignment;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;

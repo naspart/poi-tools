@@ -1,4 +1,4 @@
-package com.naspat.poi.enums;
+package com.hgobox.poi.enums;
 
 public enum HorizontalAlignment {
     GENERAL,

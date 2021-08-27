@@ -1,7 +1,7 @@
-package com.naspat.poi.annotation;
+package com.hgobox.poi.annotation;
 
-import com.naspat.poi.enums.HorizontalAlignment;
-import com.naspat.poi.enums.VerticalAlignment;
+import com.hgobox.poi.enums.VerticalAlignment;
+import com.hgobox.poi.enums.HorizontalAlignment;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

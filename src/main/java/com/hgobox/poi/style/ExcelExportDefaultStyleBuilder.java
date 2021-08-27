@@ -1,4 +1,4 @@
-package com.naspat.poi.style;
+package com.hgobox.poi.style;
 
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
