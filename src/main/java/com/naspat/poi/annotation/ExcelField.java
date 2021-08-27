@@ -21,6 +21,12 @@ public @interface ExcelField {
      */
     String format() default "";
 
+    /**
+     * 数据替换
+     * 例：["0_待支付", "1_已支付"]，会将当前列0值替换成待支付，1值替换成已支付
+     *
+     * @return 替换方案
+     */
     String[] replace() default {};
 
     /**

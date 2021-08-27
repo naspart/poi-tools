@@ -20,6 +20,10 @@ public class BeanUtils {
     }
 
     public static Object getFieldValue(final Object object, final String fieldName) {
+        if (object == null) {
+            return null;
+        }
+
         Field field = getDeclaredField(object, fieldName);
 
         if (field == null) {

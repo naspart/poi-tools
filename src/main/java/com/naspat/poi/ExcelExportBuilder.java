@@ -4,6 +4,7 @@ import com.naspat.poi.annotation.ExcelField;
 import com.naspat.poi.annotation.ExcelTarget;
 import com.naspat.poi.entity.ExcelFieldEntity;
 import com.naspat.poi.entity.ExcelTargetEntity;
+import com.naspat.poi.enums.VerticalAlignment;
 import com.naspat.poi.function.ExcelDataFunction;
 import com.naspat.poi.style.AbstractExcelExportStyleBuilder;
 import com.naspat.poi.style.ExcelExportDefaultStyleBuilder;
@@ -27,11 +28,11 @@ import java.util.*;
 
 @Slf4j
 public class ExcelExportBuilder {
-    private final Workbook workbook;
+    private final SXSSFWorkbook workbook;
     private AbstractExcelExportStyleBuilder excelExportStyleBuilder;
 
     public ExcelExportBuilder() {
-        this.workbook = new SXSSFWorkbook();
+        this.workbook = new SXSSFWorkbook(200);
         this.excelExportStyleBuilder = new ExcelExportDefaultStyleBuilder();
         this.excelExportStyleBuilder.setWorkbook(workbook);
 
@@ -115,8 +116,6 @@ public class ExcelExportBuilder {
 
         sheet.createFreezePane(excelTargetEntity.getFrozenColumns(), excelTargetEntity.getFrozenRows());
 
-        sheet.addMergedRegion(new CellRangeAddress(2, 3, 1, 1));
-
         return this;
     }
 
@@ -127,6 +126,7 @@ public class ExcelExportBuilder {
                 outputStream.flush();
             }
         } finally {
+            this.workbook.dispose();
             this.workbook.close();
         }
     }
@@ -169,6 +169,7 @@ public class ExcelExportBuilder {
                                 .width(excelField.width())
                                 .horizontalAlignment(excelField.horizontalAlignment())
                                 .verticalAlignment(excelField.verticalAlignment())
+                                .verticalMerge(excelField.verticalMerge())
                                 .build()
                 );
 
@@ -191,21 +192,21 @@ public class ExcelExportBuilder {
         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
         // 设置水平对齐方式
         if (horizontalAlignment == com.naspat.poi.enums.HorizontalAlignment.CENTER) {
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
         } else if (horizontalAlignment == com.naspat.poi.enums.HorizontalAlignment.RIGHT) {
-            cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+            cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.RIGHT);
         } else if (horizontalAlignment == com.naspat.poi.enums.HorizontalAlignment.LEFT) {
-            cellStyle.setAlignment(HorizontalAlignment.LEFT);
+            cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.LEFT);
         } else {
-            cellStyle.setAlignment(HorizontalAlignment.GENERAL);
+            cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.GENERAL);
         }
 
         // 设置垂直对齐方式
-        if (verticalAlignment == com.naspat.poi.enums.VerticalAlignment.TOP) {
+        if (verticalAlignment == VerticalAlignment.TOP) {
             cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
-        } else if (verticalAlignment == com.naspat.poi.enums.VerticalAlignment.CENTER) {
+        } else if (verticalAlignment == VerticalAlignment.CENTER) {
             cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
-        } else if (verticalAlignment == com.naspat.poi.enums.VerticalAlignment.BOTTOM) {
+        } else if (verticalAlignment == VerticalAlignment.BOTTOM) {
             cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.BOTTOM);
         }
 
@@ -266,11 +267,12 @@ public class ExcelExportBuilder {
         }
     }
 
-    private void createRow(Sheet sheet, ExcelTargetEntity excelTargetEntity, Object obj, int rowNum) {
-        Row row = sheet.createRow(rowNum);
-        row.setHeight((short) 300);
+    private void createRow(Sheet sheet, ExcelTargetEntity excelTargetEntity, Object obj, int curRowIndex) {
+        Row currentRow = sheet.createRow(curRowIndex);
+        Row lastRow = sheet.getRow(curRowIndex - 1);
+        currentRow.setHeight((short) 300);
 
-        Cell[] cells = this.createCells(row, excelTargetEntity.getFields().size());
+        Cell[] cells = this.createCells(currentRow, excelTargetEntity.getFields().size());
         int cellNum = 0;
         for (Field field : excelTargetEntity.getFields()) {
             Object value = BeanUtils.getFieldValue(obj, field.getName());
@@ -348,6 +350,31 @@ public class ExcelExportBuilder {
 
             cells[cellNum].setCellStyle(excelTargetEntity.getCellStyleMap().get(entity.getField()));
 
+            if (entity.isVerticalMerge()) {
+                String currentValue = this.getCellValueByCell(currentRow.getCell(excelTargetEntity.getMergeReferenceIndex()));
+                String lastValue = this.getCellValueByCell(lastRow.getCell(excelTargetEntity.getMergeReferenceIndex()));
+                if (currentValue.equals(lastValue)) {
+                    List<CellRangeAddress> mergeRegions = sheet.getMergedRegions();
+                    boolean isMerged = false;
+                    for (int i = 0; i < mergeRegions.size() && !isMerged; i++) {
+                        CellRangeAddress cellRangeAddr = mergeRegions.get(i);
+                        // 若上一个单元格已经被合并，则先移出原有的合并单元，再重新添加合并单元
+                        if (cellRangeAddr.isInRange(curRowIndex - 1, cellNum)) {
+                            sheet.removeMergedRegion(i);
+                            cellRangeAddr.setLastRow(curRowIndex);
+                            sheet.addMergedRegion(cellRangeAddr);
+                            isMerged = true;
+                        }
+                    }
+
+                    // 若上一个单元格未被合并，则新增合并单元
+                    if (!isMerged) {
+                        CellRangeAddress cellRangeAddress = new CellRangeAddress(curRowIndex - 1, curRowIndex, cellNum, cellNum);
+                        sheet.addMergedRegion(cellRangeAddress);
+                    }
+                }
+            }
+
             cellNum++;
         }
     }
@@ -359,5 +386,23 @@ public class ExcelExportBuilder {
         }
 
         return cells;
+    }
+
+    private String getCellValueByCell(Cell cell) {
+        if (cell == null || cell.toString().trim().equals("")) {
+            return "";
+        }
+
+        String cellValue = "";
+        CellType cellType = cell.getCellType();
+        if (cellType.equals(CellType.STRING)) {
+            cellValue = cell.getStringCellValue().trim();
+        } else if (cellType.equals(CellType.BOOLEAN)) {
+            cellValue = String.valueOf(cell.getBooleanCellValue());
+        } else if (cellType.equals(CellType.NUMERIC)) {
+            cellValue = String.valueOf(cell.getNumericCellValue());
+        }
+
+        return cellValue;
     }
 }

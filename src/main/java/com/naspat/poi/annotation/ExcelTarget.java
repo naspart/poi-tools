@@ -30,4 +30,6 @@ public @interface ExcelTarget {
      * @return 冻结行
      */
     int frozenRows() default 0;
+
+    int mergeReferenceIndex() default -1;
 }

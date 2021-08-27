@@ -19,6 +19,8 @@ public class ExcelTargetEntity {
 
     private int frozenRows;
 
+    private int mergeReferenceIndex;
+
     private List<Field> fields;
 
     private Map<Field, ExcelFieldEntity> excelFieldEntityMap;

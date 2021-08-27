@@ -6,7 +6,7 @@
 
     <groupId>com.naspat</groupId>
     <artifactId>poi-tools</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 
     <name>poi-tools</name>
     <url>https://github.com/naspart/poi-tools</url>
@@ -64,6 +64,26 @@
             <version>1.7.30</version>
         </dependency>
 
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-spring-boot-starter</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-base</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-web</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-annotation</artifactId>
+            <version>4.3.0</version>
+        </dependency>
     </dependencies>
 
     <build>
