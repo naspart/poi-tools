@@ -1,8 +1,7 @@
 package com.hgobox.poi;
 
-import com.hgobox.poi.annotation.ExcelTarget;
-import com.hgobox.poi.util.StringUtils;
 import com.hgobox.poi.annotation.ExcelField;
+import com.hgobox.poi.annotation.ExcelTarget;
 import com.hgobox.poi.entity.ExcelFieldEntity;
 import com.hgobox.poi.entity.ExcelTargetEntity;
 import com.hgobox.poi.enums.VerticalAlignment;
@@ -10,6 +9,7 @@ import com.hgobox.poi.function.ExcelDataFunction;
 import com.hgobox.poi.style.AbstractExcelExportStyleBuilder;
 import com.hgobox.poi.style.ExcelExportDefaultStyleBuilder;
 import com.hgobox.poi.util.BeanUtils;
+import com.hgobox.poi.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
@@ -169,7 +169,6 @@ public class ExcelExportBuilder {
                                 .width(excelField.width())
                                 .horizontalAlignment(excelField.horizontalAlignment())
                                 .verticalAlignment(excelField.verticalAlignment())
-                                .verticalMerge(excelField.verticalMerge())
                                 .build()
                 );
 
@@ -269,7 +268,6 @@ public class ExcelExportBuilder {
 
     private void createRow(Sheet sheet, ExcelTargetEntity excelTargetEntity, Object obj, int curRowIndex) {
         Row currentRow = sheet.createRow(curRowIndex);
-        Row lastRow = sheet.getRow(curRowIndex - 1);
         currentRow.setHeight((short) 300);
 
         Cell[] cells = this.createCells(currentRow, excelTargetEntity.getFields().size());
@@ -349,32 +347,6 @@ public class ExcelExportBuilder {
             }
 
             cells[cellNum].setCellStyle(excelTargetEntity.getCellStyleMap().get(entity.getField()));
-
-            if (entity.isVerticalMerge()) {
-                String currentValue = this.getCellValueByCell(currentRow.getCell(excelTargetEntity.getMergeReferenceIndex()));
-                String lastValue = this.getCellValueByCell(lastRow.getCell(excelTargetEntity.getMergeReferenceIndex()));
-                if (currentValue.equals(lastValue)) {
-                    List<CellRangeAddress> mergeRegions = sheet.getMergedRegions();
-                    boolean isMerged = false;
-                    for (int i = 0; i < mergeRegions.size() && !isMerged; i++) {
-                        CellRangeAddress cellRangeAddr = mergeRegions.get(i);
-                        // 若上一个单元格已经被合并，则先移出原有的合并单元，再重新添加合并单元
-                        if (cellRangeAddr.isInRange(curRowIndex - 1, cellNum)) {
-                            sheet.removeMergedRegion(i);
-                            cellRangeAddr.setLastRow(curRowIndex);
-                            sheet.addMergedRegion(cellRangeAddr);
-                            isMerged = true;
-                        }
-                    }
-
-                    // 若上一个单元格未被合并，则新增合并单元
-                    if (!isMerged) {
-                        CellRangeAddress cellRangeAddress = new CellRangeAddress(curRowIndex - 1, curRowIndex, cellNum, cellNum);
-                        sheet.addMergedRegion(cellRangeAddress);
-                    }
-                }
-            }
-
             cellNum++;
         }
     }
@@ -386,23 +358,5 @@ public class ExcelExportBuilder {
         }
 
         return cells;
-    }
-
-    private String getCellValueByCell(Cell cell) {
-        if (cell == null || cell.toString().trim().equals("")) {
-            return "";
-        }
-
-        String cellValue = "";
-        CellType cellType = cell.getCellType();
-        if (cellType.equals(CellType.STRING)) {
-            cellValue = cell.getStringCellValue().trim();
-        } else if (cellType.equals(CellType.BOOLEAN)) {
-            cellValue = String.valueOf(cell.getBooleanCellValue());
-        } else if (cellType.equals(CellType.NUMERIC)) {
-            cellValue = String.valueOf(cell.getNumericCellValue());
-        }
-
-        return cellValue;
     }
 }

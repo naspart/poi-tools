@@ -21,8 +21,6 @@ public class ExcelFieldEntity {
 
     private int width;
 
-    private boolean verticalMerge;
-
     private HorizontalAlignment horizontalAlignment;
 
     private VerticalAlignment verticalAlignment;

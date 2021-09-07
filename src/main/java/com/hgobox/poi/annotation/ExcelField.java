@@ -43,9 +43,4 @@ public @interface ExcelField {
      * @return 垂直对齐
      */
     VerticalAlignment verticalAlignment() default VerticalAlignment.CENTER;
-
-    /**
-     * @return 纵向合并内容相同的单元格
-     */
-    boolean verticalMerge() default false;
 }
